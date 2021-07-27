@@ -26,7 +26,7 @@
                         <!--로그인 인풋-->
                         <form class="login__input" action="/auth/signin" method="POST" >
                             <input type="text" name="username" placeholder="유저네임" required="required" />
-                            <input type="password" name="password" placeholder="비밀번호" required="required" />
+                            <input type="password" name="password" placeholder="비밀번호" />
                             <button>로그인</button>
                         </form>
                         <!--로그인 인풋end-->

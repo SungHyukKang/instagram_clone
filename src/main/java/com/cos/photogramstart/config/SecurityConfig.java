@@ -1,4 +1,4 @@
-package com.cos.photogramstart.config;
+ package com.cos.photogramstart.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +19,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.csrf().disable();
-		http.authorizeRequests().antMatchers("/", "/user/**", "/image/**", "/subscribe/**", ".comment/**")
+		http.authorizeRequests().antMatchers("/", "/user/**", "/image/**", "/subscribe/**", ".comment/**","/api/**")
 				.authenticated()
 				.anyRequest()
 				.permitAll()
