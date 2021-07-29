@@ -4,10 +4,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.cos.photogramstart.domain.subscribe.SubscribeRepository;
 import com.cos.photogramstart.domain.user.User;
 import com.cos.photogramstart.domain.user.UserRepository;
 import com.cos.photogramstart.handler.ex.CustomException;
 import com.cos.photogramstart.handler.ex.CustomValidationApiException;
+import com.cos.photogramstart.web.dto.user.UserProfileDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -15,14 +17,24 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserService {
 
+	private final SubscribeRepository subscribeRepository;
 	private final UserRepository userRepository;
 	private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
 	@Transactional(readOnly = true)
-	public User 회원프로필(int userId) {
-		User userEntity = userRepository.findById(userId).orElseThrow(() -> new CustomException("해당 회원은 존재하지 않습니다."));
+	public UserProfileDto 회원프로필(int pageUserId, int principalId) {
+		UserProfileDto dto = new UserProfileDto();
 
-		return userEntity;
+		User userEntity = userRepository.findById(pageUserId)
+				.orElseThrow(() -> new CustomException("해당 회원은 존재하지 않습니다."));
+		dto.setUser(userEntity);
+		dto.setPageOwner(pageUserId == principalId);
+		dto.setImageCount(userEntity.getImages().size());
+		int subscribeState = subscribeRepository.mSubscribeState(principalId, pageUserId);
+		int subscribeCount = subscribeRepository.mSubscribeCount(pageUserId);
+		dto.setSubscribeState(subscribeState == 1 ? true : false);
+		dto.setSubscribeCount(subscribeCount);
+		return dto;
 	}
 
 	@Transactional

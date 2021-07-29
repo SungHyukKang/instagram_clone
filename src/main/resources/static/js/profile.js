@@ -9,15 +9,32 @@
   (7) 사용자 프로파일 이미지 메뉴(사진업로드, 취소) 모달 
   (8) 구독자 정보 모달 닫기
  */
-
+	
 // (1) 유저 프로파일 페이지 구독하기, 구독취소
-function toggleSubscribe(obj) {
+function toggleSubscribe(toUserId,obj) {
 	if ($(obj).text() === "구독취소") {
-		$(obj).text("구독하기");
-		$(obj).toggleClass("blue");
+		$.ajax({
+			type: "delete",
+			url: "/api/subscribe/" + toUserId,
+			dataType: "json"
+		}).done(res => {
+			$(obj).text("구독하기");
+			$(obj).toggleClass("blue");
+		}).fail(error => {
+			console.log("구독취소실패", error);
+		});
+
 	} else {
-		$(obj).text("구독취소");
-		$(obj).toggleClass("blue");
+		$.ajax({
+			type: "post",
+			url: "/api/subscribe/" + toUserId,
+			dataType: "json"
+		}).done(res => {
+			$(obj).text("구독취소");
+			$(obj).toggleClass("blue");
+		}).fail(error => {
+			console.log("구독실패", error);
+		});
 	}
 }
 

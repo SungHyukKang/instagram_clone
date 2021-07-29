@@ -16,6 +16,7 @@ import javax.persistence.PrePersist;
 
 import com.cos.photogramstart.domain.image.Image;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -52,9 +53,12 @@ public class User {
 
 	// 나는 연관관계의 주인이 아니다. 그러므로 테이블에 컬럼을 만들지 말아라.
 	// User를 Select할 때 해당 User id로 등록된 image들을 모두 가져와.
-	// Lazy= User를 Select할 때 해당 User id로 등록된 image들을 가져오지마. -> 대신 getImages() 함수의 원소들이 호출될 때 가져와 . 즉 필요하면 가져온다.
-	// Eager = User를 Select할 때 해당 User id로 등록된 image들을 전부 Join해서 가져와 
+	// Lazy= User를 Select할 때 해당 User id로 등록된 image들을 가져오지마. -> 대신 getImages() 함수의
+	// 원소들이 호출될 때 가져와 . 즉 필요하면 가져온다.
+	// Eager = User를 Select할 때 해당 User id로 등록된 image들을 전부 Join해서 가져와
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+//	@JsonBackReference
+	@JsonIgnoreProperties({ "user" })
 	private List<Image> images;
 
 	private LocalDateTime createDate;
