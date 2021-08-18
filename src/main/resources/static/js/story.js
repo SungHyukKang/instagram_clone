@@ -47,12 +47,17 @@ function getStoryItem(image) {
 	<div class="sl__item__contents">
 		<div class="sl__item__contents__icon">
 
-			<button>
-				<i class="fas fa-heart active" id="storyLikeIcon-${image.id}" onclick="toggleLike(${image.id})"></i>
+			<button>`;
+	if (image.likeState) {
+		item += `<i class="fas fa-heart active" id="storyLikeIcon-${image.id}" onclick="toggleLike(${image.id})"></i>`;
+	} else {
+		item += `<i class="far fa-heart" id="storyLikeIcon-${image.id}" onclick="toggleLike(${image.id})"></i>`;
+	}
+	item += `
 			</button>
 		</div>
 
-		<span class="like"><b id="storyLikeCount-1">3 </b>likes</span>
+		<span class="like"><b id="storyLikeCount-${image.id}">${image.likeCount}</b>likes</span>
 
 		<div class="sl__item__contents__content">
 			<p>${image.caption}</p>
@@ -79,7 +84,7 @@ function getStoryItem(image) {
 		</div>
 
 	</div>
-</div>`
+</div>`;
 	return item;
 }
 
@@ -103,13 +108,38 @@ $(window).scroll(() => {
 function toggleLike(imageId) {
 	let likeIcon = $(`#storyLikeIcon-${imageId}`);
 	if (likeIcon.hasClass("far")) {
-		likeIcon.addClass("fas");
-		likeIcon.addClass("active");
-		likeIcon.removeClass("far");
+		$.ajax({
+			type: "post",
+			url: `/api/image/${imageId}/likes`,
+			dataType: "json"
+		}
+		).done(res => {
+			let likeCountStr=$(`#storyLikeCount-${imageId}`).text();
+			let likeCount=Number(likeCountStr)+1;
+			$(`#storyLikeCount-${imageId}`).text(likeCount);
+			likeIcon.addClass("fas");
+			likeIcon.addClass("active");
+			likeIcon.removeClass("far");
+		}).fail(error => {
+			console.log("오류", error);
+		});
 	} else {
-		likeIcon.removeClass("fas");
-		likeIcon.removeClass("active");
-		likeIcon.addClass("far");
+		$.ajax({
+			type: "delete",
+			url: `/api/image/${imageId}/likes`,
+			dataType: "json"
+		}
+		).done(res => {
+			let likeCountStr=$(`#storyLikeCount-${imageId}`).text();
+			let likeCount=Number(likeCountStr)-1;
+			$(`#storyLikeCount-${imageId}`).text(likeCount);
+			likeIcon.removeClass("fas");
+			likeIcon.removeClass("active");
+			likeIcon.addClass("far");
+		}).fail(error => {
+			console.log("오류", error);
+		});
+
 	}
 }
 

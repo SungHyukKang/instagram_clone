@@ -15,6 +15,7 @@ import javax.persistence.UniqueConstraint;
 import com.cos.photogramstart.domain.image.Image;
 import com.cos.photogramstart.domain.subscribe.Subscribe;
 import com.cos.photogramstart.domain.user.User;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,25 +28,34 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(
-		uniqueConstraints = { @UniqueConstraint(name = "likes_uk", columnNames = { "imageId", "userId" }) })
+		uniqueConstraints = {
+				@UniqueConstraint(
+						name = "likes_uk", 
+						columnNames = { "imageId", "userId" }) 
+				}
+		)
 public class Likes { // N
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-
+	
+	
+	//무한 참조됨
 	@JoinColumn(name = "imageId")
 	@ManyToOne
 	private Image image; // 1
 	
 	//오류가 터지고 나서 잡아보자.
+	@JsonIgnoreProperties({"images"})
 	@JoinColumn(name = "userId")
 	@ManyToOne
 	private User user; // 1
-
+	
 	private LocalDateTime createDate;
 
 	@PrePersist // DB에 Insert 되기 직전에 실행
 	public void createDate() {
 		this.createDate = LocalDateTime.now();
 	}
+	
 }
