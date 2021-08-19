@@ -63,9 +63,9 @@ public class ImageService {
 		Image imageEntity = imageRepository.save(image);
 	}
 
+	@Transactional(readOnly = true)
 	public List<Image> 인기사진() {
-		// TODO Auto-generated method stub
-		return null;
+		return imageRepository.mPopular();
 	}
 
 }
