@@ -19,16 +19,16 @@ public class CommentService {
 
 	private final CommentRepository commentRepository;
 	private final UserRepository userRepository;
+
 	@Transactional
 	public Comment 댓글쓰기(String content, int imageId, int userId) {
 
-		
 		// Tip . 객체를 만들 때 id값만 담아서 insert 할 수 있다.
 		// 대신 return 시에 image 객체와 user 객체는 id값만 가지고 있는 빈 객체를 리턴받는다.
 		Image image = new Image();
 		image.setId(imageId);
-		
-		User user = userRepository.findById(userId).orElseThrow(()->{
+
+		User user = userRepository.findById(userId).orElseThrow(() -> {
 			throw new CustomApiException("유저 아이디를 찾을 수 없습니다.");
 		});
 		Comment comment = new Comment();
@@ -39,8 +39,12 @@ public class CommentService {
 	}
 
 	@Transactional
-	public void 댓글삭제() {
-
+	public void 댓글삭제(int id) {
+		try {
+			commentRepository.deleteById(id);
+		} catch (Exception e) {
+			throw new CustomApiException(e.getMessage());
+		}
 	}
 
 }

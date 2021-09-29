@@ -38,7 +38,8 @@
 </head>
 
 <body>
-
+	<!-- principalId 담아두는 곳 -->
+	<input type="hidden" id="principalId" value="${principal.user.id }">
 	<header class="header">
 		<div class="container">
 			<a href="/" class="logo"> <img src="/images/logo.jpg" alt="">
@@ -50,8 +51,8 @@
 					<li class="navi-item"><a href="/image/popular"> <i
 							class="far fa-compass"></i>
 					</a></li>
-					<li class="navi-item"><a href="/user/${principal.user.id }"> <i
-							class="far fa-user"></i>
+					<li class="navi-item"><a href="/user/${principal.user.id }">
+							<i class="far fa-user"></i>
 					</a></li>
 				</ul>
 			</nav>
